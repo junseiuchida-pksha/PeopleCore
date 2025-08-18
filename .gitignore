@@ -1,0 +1,23 @@
+# clasp
+.clasp.json
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.local
+
+# Temporary files
+*.tmp
+*.temp
