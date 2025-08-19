@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>People Core</title>
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f5;
+      --bg-tertiary: #e8e8e8;
+      --text-primary: #333333;
+      --text-secondary: #666666;
+      --text-emphasis: #1a5490;
+      --border-color: #2c3e50;
+      --accent-color: #3498db;
+      --accent-hover: #2980b9;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2a2a2a;
+      --bg-tertiary: #3a3a3a;
+      --text-primary: #e0e0e0;
+      --text-secondary: #b0b0b0;
+      --text-emphasis: #5dade2;
+      --border-color: #4a5f7a;
+      --accent-color: #3498db;
+      --accent-hover: #5dade2;
+      --shadow: rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background-color: var(--bg-primary);
+      box-shadow: 0 2px 5px var(--shadow);
+      margin-bottom: 20px;
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      color: var(--text-emphasis);
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .theme-switcher {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .theme-switcher label {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .theme-switcher select {
+      padding: 5px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .tabs {
+      background-color: var(--bg-primary);
+      border-radius: 8px;
+      box-shadow: 0 2px 5px var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .tab-button {
+      padding: 15px 30px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .tab-button:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-secondary);
+    }
+
+    .tab-button.active {
+      color: var(--text-emphasis);
+      font-weight: 600;
+    }
+
+    .tab-button.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: var(--accent-color);
+    }
+
+    .tab-content {
+      padding: 20px;
+      background-color: var(--bg-primary);
+      border-radius: 0 0 8px 8px;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    .search-filter-container {
+      background-color: var(--bg-secondary);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .filter-select {
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-width: 150px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-width: 200px;
+    }
+
+    .search-button {
+      padding: 10px 20px;
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-button:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .checkbox-container label {
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .table-container {
+      background-color: var(--bg-primary);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background-color: var(--bg-tertiary);
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-emphasis);
+      border-bottom: 2px solid var(--border-color);
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    th:hover {
+      background-color: var(--bg-secondary);
+    }
+
+    .sort-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--bg-tertiary);
+    }
+
+    tr {
+      transition: background-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    tr:hover {
+      background-color: var(--bg-secondary);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+
+    .error {
+      text-align: center;
+      padding: 40px;
+      color: #e74c3c;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: var(--bg-primary);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px var(--shadow);
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideIn 0.3s ease;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-emphasis);
+    }
+
+    .close-button {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .close-button:hover {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .detail-row {
+      display: flex;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--bg-tertiary);
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: var(--text-emphasis);
+      width: 150px;
+      flex-shrink: 0;
+    }
+
+    .detail-value {
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+
+      .tab-button {
+        padding: 10px 15px;
+        font-size: 14px;
+      }
+
+      .search-row {
+        flex-direction: column;
+      }
+
+      .filter-select,
+      .search-input {
+        width: 100%;
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>People Core</h1>
+      <div class="theme-switcher">
+        <label for="theme-select">テーマ:</label>
+        <select id="theme-select">
+          <option value="light">ライトモード</option>
+          <option value="dark">ダークモード</option>
+          <option value="system">システムに合わせる</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <div class="tab-buttons">
+        <button class="tab-button active" onclick="switchTab('employees')">従業員</button>
+        <button class="tab-button" onclick="switchTab('organization')">組織図</button>
+      </div>
+      <div class="tab-content">
+        <div id="employees-tab" class="tab-pane active">
+          <div class="search-filter-container">
+            <div class="search-row">
+              <select id="filter-field" class="filter-select">
+                <option value="all">すべての項目</option>
+                <option value="雇用形態">雇用形態</option>
+                <option value="職種">職種</option>
+                <option value="会社">会社</option>
+                <option value="本部">本部</option>
+                <option value="部">部</option>
+              </select>
+              <input type="text" id="search-input" class="search-input" placeholder="検索キーワードを入力...">
+              <button class="search-button" onclick="searchEmployees()">検索</button>
+            </div>
+            <div class="checkbox-container">
+              <input type="checkbox" id="include-retired" onchange="searchEmployees()">
+              <label for="include-retired">退職者も表示する</label>
+            </div>
+          </div>
+          <div class="table-container">
+            <table id="employee-table">
+              <thead>
+                <tr>
+                  <th onclick="sortTable(0)">社員番号<span class="sort-icon">▼</span></th>
+                  <th onclick="sortTable(1)">名前<span class="sort-icon">▼</span></th>
+                  <th onclick="sortTable(2)">雇用形態<span class="sort-icon">▼</span></th>
+                </tr>
+              </thead>
+              <tbody id="employee-tbody">
+                <tr>
+                  <td colspan="3" class="loading">データを読み込んでいます...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="organization-tab" class="tab-pane">
+          <div class="loading">組織図機能は開発中です</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="employee-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">従業員詳細</h2>
+        <button class="close-button" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="modal-body">
+        <!-- 詳細情報がここに表示されます -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // グローバル変数
+    let employeeData = [];
+    let sortColumn = -1;
+    let sortDirection = 'asc';
+
+    // ページ読み込み時の初期化
+    window.onload = function() {
+      initializeTheme();
+      loadEmployeeData();
+    };
+
+    // テーマの初期化
+    function initializeTheme() {
+      const themeSelect = document.getElementById('theme-select');
+      const savedTheme = localStorage.getItem('theme') || 'system';
+      themeSelect.value = savedTheme;
+      applyTheme(savedTheme);
+
+      themeSelect.addEventListener('change', function() {
+        const theme = this.value;
+        localStorage.setItem('theme', theme);
+        applyTheme(theme);
+      });
+    }
+
+    // テーマの適用
+    function applyTheme(theme) {
+      if (theme === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+    }
+
+    // タブ切り替え
+    function switchTab(tabName) {
+      const tabs = document.querySelectorAll('.tab-pane');
+      const buttons = document.querySelectorAll('.tab-button');
+
+      tabs.forEach(tab => tab.classList.remove('active'));
+      buttons.forEach(button => button.classList.remove('active'));
+
+      document.getElementById(tabName + '-tab').classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // 従業員データの読み込み
+    function loadEmployeeData() {
+      console.log('loadEmployeeData開始');
+      google.script.run
+        .withSuccessHandler(function(data) {
+          console.log('データ取得成功');
+          displayEmployees(data);
+        })
+        .withFailureHandler(function(error) {
+          console.error('データ取得失敗:', error);
+          showError(error);
+        })
+        .getEmployeeData();
+    }
+
+    // 従業員データの表示
+    function displayEmployees(data) {
+      console.log('displayEmployees開始');
+      console.log('受信したデータ数:', data ? data.length : 'dataがnull/undefined');
+      
+      if (!data) {
+        console.error('データが受信されていません');
+        showError(new Error('データが受信されていません'));
+        return;
+      }
+      
+      if (data.length > 0) {
+        console.log('サンプルデータ:', data[0]);
+        console.log('社員番号:', data[0]['社員番号']);
+        console.log('氏名:', data[0]['氏名']);
+      }
+      
+      employeeData = data;
+      console.log('renderEmployeeTableを呼び出します');
+      renderEmployeeTable(data);
+    }
+
+    // エラー表示
+    function showError(error) {
+      console.error('エラーの詳細:', error);
+      const tbody = document.getElementById('employee-tbody');
+      tbody.innerHTML = `<tr><td colspan="3" class="error">エラーが発生しました: ${error.message || error}</td></tr>`;
+    }
+
+    // 従業員テーブルのレンダリング
+    function renderEmployeeTable(data) {
+      try {
+        console.log('renderEmployeeTable開始: データ数', data.length);
+        const tbody = document.getElementById('employee-tbody');
+        
+        if (!tbody) {
+          console.error('employee-tbody要素が見つかりません');
+          return;
+        }
+        
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="3" class="loading">データがありません</td></tr>';
+          return;
+        }
+
+        const includeRetired = document.getElementById('include-retired').checked;
+        // 在籍中フラグ = 1 で在籍中、空白で退職者
+        const filteredData = includeRetired ? data : data.filter(emp => {
+          // 最初の1件だけログ出力
+          if (data.indexOf(emp) === 0) {
+            console.log('在籍中フラグの値:', emp['在籍中フラグ'], '型:', typeof emp['在籍中フラグ']);
+          }
+          // 文字列'1'または数値1を在籍中とみなす
+          return emp['在籍中フラグ'] === 1 || emp['在籍中フラグ'] === '1';
+        });
+        console.log('フィルター後のデータ数:', filteredData.length);
+
+        let html = '';
+        filteredData.forEach((employee, index) => {
+          if (index === 0) {
+            console.log('最初の表示データ:', employee);
+            console.log('名前の値:', employee['名前']);
+            console.log('使用可能なキー:', Object.keys(employee));
+          }
+          html += `
+            <tr onclick="showEmployeeDetail('${employee['社員番号']}')">
+              <td>${employee['社員番号'] || ''}</td>
+              <td>${employee['名前'] || ''}</td>
+              <td>${employee['雇用形態'] || ''}</td>
+            </tr>
+          `;
+        });
+        console.log('生成されたHTML行数:', filteredData.length);
+        tbody.innerHTML = html;
+        console.log('renderEmployeeTable完了');
+      } catch (error) {
+        console.error('renderEmployeeTableでエラー発生:', error);
+        showError(error);
+      }
+    }
+
+    // 検索機能
+    function searchEmployees() {
+      const filterField = document.getElementById('filter-field').value;
+      const searchValue = document.getElementById('search-input').value.toLowerCase();
+      const includeRetired = document.getElementById('include-retired').checked;
+
+      let filteredData = includeRetired ? employeeData : employeeData.filter(emp => emp['在籍中フラグ'] === 1 || emp['在籍中フラグ'] === '1');
+
+      if (searchValue) {
+        filteredData = filteredData.filter(employee => {
+          if (filterField === 'all') {
+            // すべての項目から検索
+            return Object.values(employee).some(value => 
+              String(value).toLowerCase().includes(searchValue)
+            );
+          } else {
+            // 特定の項目から検索
+            const fieldValue = String(employee[filterField] || '').toLowerCase();
+            if (searchValue.startsWith('-')) {
+              // NOT検索
+              const notValue = searchValue.substring(1);
+              return !fieldValue.includes(notValue);
+            } else {
+              return fieldValue.includes(searchValue);
+            }
+          }
+        });
+      }
+
+      renderEmployeeTable(filteredData);
+    }
+
+    // ソート機能
+    function sortTable(columnIndex) {
+      const headers = ['社員番号', '氏名', '雇用形態'];
+      const columnName = headers[columnIndex];
+
+      // 実際のデータ列名にマッピング
+      const actualColumnMap = {
+        '社員番号': '社員番号',
+        '氏名': '氏名',
+        '雇用形態': '雇用形態'
+      };
+
+      const actualColumnName = actualColumnMap[columnName];
+      if (!actualColumnName) return;
+
+      if (sortColumn === columnIndex) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortColumn = columnIndex;
+        sortDirection = 'asc';
+      }
+
+      const includeRetired = document.getElementById('include-retired').checked;
+      let dataToSort = includeRetired ? [...employeeData] : employeeData.filter(emp => emp['在籍中フラグ'] === 1 || emp['在籍中フラグ'] === '1');
+
+      dataToSort.sort((a, b) => {
+        const aValue = a[actualColumnName] || '';
+        const bValue = b[actualColumnName] || '';
+
+        if (sortDirection === 'asc') {
+          return aValue > bValue ? 1 : -1;
+        } else {
+          return aValue < bValue ? 1 : -1;
+        }
+      });
+
+      renderEmployeeTable(dataToSort);
+      updateSortIcons(columnIndex);
+    }
+
+    // ソートアイコンの更新
+    function updateSortIcons(activeColumn) {
+      const icons = document.querySelectorAll('.sort-icon');
+      icons.forEach((icon, index) => {
+        if (index === activeColumn) {
+          icon.textContent = sortDirection === 'asc' ? '▲' : '▼';
+        } else {
+          icon.textContent = '▼';
+        }
+      });
+    }
+
+    // 従業員詳細の表示
+    function showEmployeeDetail(employeeId) {
+      const employee = employeeData.find(emp => emp['社員番号'] === employeeId);
+      if (!employee) return;
+
+      google.script.run
+        .withSuccessHandler(displayEmployeeDetail)
+        .withFailureHandler(showError)
+        .getEmployeeDetail(employeeId);
+    }
+
+    // 従業員詳細モーダルの表示
+    function displayEmployeeDetail(employee) {
+      const modalBody = document.getElementById('modal-body');
+      let html = '';
+
+      // すべての項目を表示
+      Object.entries(employee).forEach(([key, value]) => {
+        if (key !== '在籍中フラグ') { // フラグは表示しない
+          html += `
+            <div class="detail-row">
+              <div class="detail-label">${key}:</div>
+              <div class="detail-value">${value || '-'}</div>
+            </div>
+          `;
+        }
+      });
+
+      modalBody.innerHTML = html;
+      document.getElementById('employee-modal').classList.add('active');
+    }
+
+    // モーダルを閉じる
+    function closeModal() {
+      document.getElementById('employee-modal').classList.remove('active');
+    }
+
+    // モーダル外側クリックで閉じる
+    window.onclick = function(event) {
+      const modal = document.getElementById('employee-modal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+
+    // システムテーマ変更の監視
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+      const themeSelect = document.getElementById('theme-select');
+      if (themeSelect.value === 'system') {
+        applyTheme('system');
+      }
+    });
+  </script>
+</body>
+</html>
